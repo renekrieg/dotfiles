@@ -1,0 +1,145 @@
+########## Eza (better ls) ########## -
+if type eza &>/dev/null; then
+  alias l="eza --icons=always"
+  alias ls="eza --icons=always"
+  alias ll="eza -lg --icons=always"
+  alias la="eza -lag --icons=always"
+  alias lt="eza -lTg --icons=always"
+  alias lt2="eza -lTg --level=2 --icons=always"
+  alias lt3="eza -lTg --level=3 --icons=always"
+  alias lta="eza -lTag --icons=always"
+  alias lta2="eza -lTag --level=2 --icons=always"
+  alias lta3="eza -lTag --level=3 --icons=always"
+fi
+
+########## Zoxide (better cd) ########## 
+# if type zoxide &>/dev/null; then
+#   alias cd="z"
+# fi
+
+########## grep ########## 
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+########## Get week number ########## 
+alias week='date +%V'
+
+########## Network ########## 
+# IP addresses
+alias isp="dig +short myip.opendns.com @resolver1.opendns.com"
+alias ip="ipconfig getifaddr en0"
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+# Show active network interfaces
+alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
+
+########## Easier navigation ########## 
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ~="cd ~" # `cd` is probably faster to type though
+alias prev="cd -"
+
+########## Docker ##########
+alias docker.cleancontainer='docker ps -a -q | xargs docker rm'
+alias docker.cleanimage='docker images --filter dangling=true -q | xargs docker rmi'
+
+########## Kubernetes ##########
+alias k="kubectl"
+alias watch="watch "
+alias kg="kubectl get"
+alias kgdep="kubectl get deployment"
+alias ksys="kubectl --namespace=kube-system"
+alias kd="kubectl describe"
+alias bb="kubectl run busybox --image=busybox:1.36.1 --rm -it --restart=Never --command --"
+
+########## Git ########## 
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gapa='git add --patch'
+alias gau='git add --update'
+alias gav='git add --verbose'
+alias gb='git branch'
+alias gba='git branch --all'
+alias gbd='git branch --delete'
+alias gbD='git branch --delete --force'
+alias gbgd='LANG=C git branch --no-color -vv | grep ": gone\]" | cut -c 3- | awk '"'"'{print $1}'"'"' | xargs git branch -d'
+alias gbgD='LANG=C git branch --no-color -vv | grep ": gone\]" | cut -c 3- | awk '"'"'{print $1}'"'"' | xargs git branch -D'
+alias gbm='git branch --move'
+alias gbnm='git branch --no-merged'
+alias gbr='git branch --remote'
+alias ggsup='git branch --set-upstream-to=origin/$(git_current_branch)'
+alias gbg='LANG=C git branch -vv | grep ": gone\]"'
+alias gco='git checkout'
+alias gcor='git checkout --recurse-submodules'
+alias gcb='git checkout -b'
+alias gcB='git checkout -B'
+alias gcd='git checkout $(git_develop_branch)'
+alias gcm='git checkout $(git_main_branch)'
+alias gcp='git cherry-pick'
+alias gcpa='git cherry-pick --abort'
+alias gcpc='git cherry-pick --continue'
+alias gclean='git clean --interactive -d'
+alias gcl='git clone --recurse-submodules'
+alias gclf='git clone --recursive --shallow-submodules --filter=blob:none --also-filter-submodules'
+alias gcam='git commit --all --message'
+alias gcmsg='git commit --message'
+alias gcsm='git commit --signoff --message'
+alias gc='git commit --verbose'
+alias gca='git commit --verbose --all'
+alias gd='git diff'
+alias gdca='git diff --cached'
+alias gdcw='git diff --cached --word-diff'
+alias gds='git diff --staged'
+alias gdw='git diff --word-diff'
+alias gfa='git fetch --all --tags --prune --jobs=10'
+alias gfo='git fetch origin'
+
+########## Work ########## 
+alias work='cd ~/work'
+alias stk='cd Developer/git/streckenkunde40'
+alias tokenschleuder="source $HOME/Developer/git/tokenschleuder/.venv/bin/activate && $HOME/Developer/git/tokenschleuder/tokenschleuder.py"
+
+########## Utils ########## 
+# Lock the screen (when going AFK)
+alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
+# Reload the shell (i.e. invoke as a login shell)
+alias reload="exec ${SHELL} -l"
+# Print each PATH entry on a separate line
+alias path="echo -e ${PATH//:/\\n}"
+# Replace cat with bat
+if [ -x "$(command -v bat)" ]; then
+  alias cat="bat --theme='OneHalfLight'"
+fi
+# htop
+if [ "$(command -v htop)" ]; then
+    alias top='htop --tree'
+fi
+
+########## Mac Utils ########## 
+# Get macOS Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
+alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup; npm install npm -g; npm update -g;'
+
+# Recursively delete `.DS_Store` files
+alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
+
+# Empty the Trash on all mounted volumes and the main HDD.
+# Also, clear Apple’s System Logs to improve shell startup speed.
+# Finally, clear download history from quarantine. https://mths.be/bum
+alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
+
+# Show/hide hidden files in Finder
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# Hide/show all desktop icons (useful when presenting)
+alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
+
+# macOS has no `md5sum`, so use `md5` as a fallback
+command -v md5sum > /dev/null || alias md5sum="md5"
+
+# macOS has no `sha1sum`, so use `shasum` as a fallback
+command -v sha1sum > /dev/null || alias sha1sum="shasum"

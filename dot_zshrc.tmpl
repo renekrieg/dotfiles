@@ -1,0 +1,42 @@
+########## Starship ##########
+if type starship &>/dev/null; then
+    eval "$(starship init zsh)"
+fi
+##########  BREW ##########
+# initialize all completions
+if type brew &>/dev/null; then
+	FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+	FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+	autoload -Uz compinit
+	compinit
+fi
+# activate zsh-autosuggestions
+if [[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-autosuggestions.zsh" ]]; then
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+# activate zsh-syntax-highlighting
+if [[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+########## Zoxide (better cd) ##########
+if type zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+########## Fuzzy Finder ##########
+source <(fzf --zsh)
+########## History Setup ##########
+HISTFILE=$HOME/.zhistory
+SAVEHIST=1000
+HISTSIZE=999
+setopt share_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_verify
+{{ if eq .chezmoi.os "darwin" }}
+# completion using arrow keys (based on history)
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
+{{ end }}
+########## Include files ##########
+. ~/.zsh_aliases
+. ~/.zsh_functions

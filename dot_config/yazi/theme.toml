@@ -1,0 +1,20 @@
+[flavor]
+dark = "catppuccin-macchiato"
+
+# Border characters: replace rounded corners with sharp box-drawing characters.
+[border_chars]
+tl = "┌"
+tr = "┐"
+bl = "└"
+br = "┘"
+horiz = "─"
+vert = "│"
+
+# Alternative ASCII fallback:
+# [border_chars]
+# tl = "+"
+# tr = "+"
+# bl = "+"
+# br = "+"
+# horiz = "-"
+# vert = "|"

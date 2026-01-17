@@ -1,0 +1,48 @@
+########## take (copid from oh-my-zsh) ##########
+if ! type oh-my-zsh &>/dev/null; then
+    function take() {
+    if [[ $1 =~ ^(https?|ftp).*\.tar\.(gz|bz2|xz)$ ]]; then
+        takeurl "$1"
+    elif [[ $1 =~ ^([A-Za-z0-9]\+@|https?|git|ssh|ftps?|rsync).*\.git/?$ ]]; then
+        takegit "$1"
+    else
+        takedir "$@"
+    fi
+    }
+    # mkcd is equivalent to takedir
+    function mkcd takedir() {
+    mkdir -p $@ && cd ${@:$#}
+    }
+    function takegit() {
+    git clone "$1"
+    cd "$(basename ${1%%.git})"
+    }
+    function takeurl() {
+    local data thedir
+    data="$(mktemp)"
+    curl -L "$1" > "$data"
+    tar xf "$data"
+    thedir="$(tar tf "$data" | head -n 1)"
+    rm "$data"
+    cd "$thedir"
+    }
+fi
+
+########## Speed up pasting w/ autosuggest ##########
+# https://github.com/zsh-users/zsh-autosuggestions/issues/238
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+########### ll with permissions in octal ##########
+cll() { ls -AlhG "$@" | awk '{k=0;for(i=0;i<=8;i++)k+=((substr($1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(" %0o ",k);print}' | cut -c 1-5,21-; }
+
+########## Yazi cd wrapper ##########
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
